@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Status Server | RFRP</title>
+  <title>RFRP - Stato Server</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,22 +11,23 @@
     <h1>Stato dei Servizi</h1>
     <nav>
       <a href="index.html">Home</a>
-      <a href="status.html" class="active">Status</a>
-      <a href="staff.html">Staff</a>
+      <a href="status.html" class="active">Stato Server</a>
+      <a href="staff.html">Area Staff</a>
     </nav>
   </header>
 
-  <section class="status-section">
-    <h2>Monitoraggio in tempo reale</h2>
-    <div class="status-card">
-      <p>🖥️ <strong>Server di gioco:</strong> <span id="server-status">Online</span></p>
-      <p>🤖 <strong>Bot Discord:</strong> <span id="bot-status">Online</span></p>
-      <p>⚙️ <strong>Applicazioni:</strong> <span id="app-status">In manutenzione</span></p>
+  <main>
+    <div class="status-container">
+      <h2>Server di Gioco: <span id="serverStatus">Offline</span></h2>
+      <h2>Bot Discord: <span id="botStatus">Offline</span></h2>
+      <h2>Applicazioni: <span id="appStatus">Offline</span></h2>
     </div>
-  </section>
+  </main>
 
   <footer>
-    <p>© 2025 RFRP - Tutti i diritti riservati</p>
+    <p>© 2025 RFRP</p>
   </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
