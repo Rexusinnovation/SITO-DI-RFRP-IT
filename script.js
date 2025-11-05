@@ -1,66 +1,61 @@
 const users = [
-  { username: "admin", password: "1234", isStaff: true },
-  { username: "dev", password: "rfrp", isStaff: true }
+  { username: "admin", password: "1234" },
+  { username: "dev", password: "rfrp" }
 ];
 
-let status = {
-  server: "Offline",
-  bot: "Offline",
-  app: "Offline"
-};
-
-// --- login logic ---
 const form = document.getElementById("loginForm");
 const panel = document.getElementById("panel");
+const msg = document.getElementById("login-msg");
 
-if (form) {
-  // controlla se l'utente è già loggato
-  const loggedIn = localStorage.getItem("loggedUser");
-  if (loggedIn) {
+// Nascondo il pannello finché non sei loggato
+if (localStorage.getItem("loggedUser")) {
+  form.classList.add("hidden");
+  panel.classList.remove("hidden");
+} else {
+  form.classList.remove("hidden");
+  panel.classList.add("hidden");
+}
+
+// LOGIN
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const user = users.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (user) {
+    localStorage.setItem("loggedUser", username);
     form.classList.add("hidden");
     panel.classList.remove("hidden");
+    msg.textContent = "";
+  } else {
+    msg.textContent = "❌ Credenziali errate!";
   }
+});
 
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const u = document.getElementById("username").value.trim();
-    const p = document.getElementById("password").value.trim();
-    const msg = document.getElementById("login-msg");
-    const found = users.find(x => x.username === u && x.password === p);
-
-    if (found) {
-      localStorage.setItem("loggedUser", u);
-      msg.textContent = "";
-      form.classList.add("hidden");
-      panel.classList.remove("hidden");
-    } else {
-      msg.textContent = "Credenziali errate.";
-    }
-  });
-}
-
-// --- logout ---
+// LOGOUT
 const logoutBtn = document.getElementById("logoutBtn");
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", () => {
-    localStorage.removeItem("loggedUser");
-    location.reload();
-  });
-}
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("loggedUser");
+  location.reload();
+});
 
-// --- salvataggio stato ---
+// SALVATAGGIO STATO
 const saveBtn = document.getElementById("saveBtn");
-if (saveBtn) {
-  saveBtn.addEventListener("click", () => {
-    status.server = document.getElementById("serverSelect").value;
-    status.bot = document.getElementById("botSelect").value;
-    status.app = document.getElementById("appSelect").value;
-    localStorage.setItem("rfrpStatus", JSON.stringify(status));
-    alert("✅ Stato aggiornato con successo!");
-  });
-}
+saveBtn.addEventListener("click", () => {
+  const status = {
+    server: document.getElementById("serverSelect").value,
+    bot: document.getElementById("botSelect").value,
+    app: document.getElementById("appSelect").value,
+  };
+  localStorage.setItem("rfrpStatus", JSON.stringify(status));
+  alert("✅ Stato aggiornato con successo!");
+});
 
-// --- mostra stato su status.html ---
+// MOSTRA STATO SU STATUS.HTML
 const serverStatus = document.getElementById("serverStatus");
 if (serverStatus) {
   const saved = JSON.parse(localStorage.getItem("rfrpStatus"));
