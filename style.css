@@ -1,0 +1,91 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #0e0e0e;
+  color: #fff;
+  text-align: center;
+}
+
+header {
+  background: #111;
+  padding: 20px;
+}
+
+h1 {
+  margin: 0;
+  color: #00ff99;
+}
+
+nav {
+  margin-top: 10px;
+}
+
+nav a {
+  color: #fff;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover, .active {
+  color: #00ff99;
+}
+
+.hero {
+  padding: 100px 20px;
+  background: linear-gradient(180deg, #111, #000);
+}
+
+.hero h2 {
+  font-size: 2em;
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 25px;
+  background: #00ff99;
+  color: #000;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.status-section, .staff-section {
+  padding: 60px 20px;
+}
+
+.status-card {
+  background: #1a1a1a;
+  border-radius: 15px;
+  padding: 30px;
+  display: inline-block;
+  margin-top: 20px;
+  text-align: left;
+}
+
+.status-card span {
+  font-weight: bold;
+  color: #00ff99;
+}
+
+input {
+  display: block;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  width: 80%;
+  max-width: 300px;
+}
+
+button {
+  cursor: pointer;
+}
+
+footer {
+  background: #111;
+  padding: 15px;
+  font-size: 14px;
+  margin-top: 40px;
+}
