@@ -41,33 +41,30 @@
       <p class="note">Accesso riservato ai membri dello staff RFRP IT®</p>
     </section>
 
-    <!-- PANNELLO (nascondo di default) -->
+    <!-- PANNELLO -->
     <section id="panel-area" class="panel hidden" style="margin-top:32px; text-align:center; padding:20px; max-width:800px;">
-      <h2>Pannello di Controllo (Test)</h2>
+      <h2>Pannello di Controllo</h2>
       <p class="small">Sei loggato come <strong id="logged-user"></strong></p>
 
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:18px">
-        <label style="display:flex;flex-direction:column;align-items:flex-start">
-          Server di Gioco:
-          <select id="serverSelect" style="margin-top:6px;padding:8px;border-radius:6px;background:#0b0b0b;color:#fff;border:1px solid rgba(0,255,136,0.08)">
+        <label>Server di Gioco:
+          <select id="serverSelect">
             <option>Online</option>
             <option>Offline</option>
             <option>Manutenzione</option>
           </select>
         </label>
 
-        <label style="display:flex;flex-direction:column;align-items:flex-start">
-          Bot Discord:
-          <select id="botSelect" style="margin-top:6px;padding:8px;border-radius:6px;background:#0b0b0b;color:#fff;border:1px solid rgba(0,255,136,0.08)">
+        <label>Bot Discord:
+          <select id="botSelect">
             <option>Online</option>
             <option>Offline</option>
             <option>Manutenzione</option>
           </select>
         </label>
 
-        <label style="display:flex;flex-direction:column;align-items:flex-start">
-          Applicazioni:
-          <select id="appSelect" style="margin-top:6px;padding:8px;border-radius:6px;background:#0b0b0b;color:#fff;border:1px solid rgba(0,255,136,0.08)">
+        <label>Applicazioni:
+          <select id="appSelect">
             <option>Aperte</option>
             <option>Chiuse</option>
             <option>In Manutenzione</option>
@@ -76,10 +73,9 @@
       </div>
 
       <div style="margin-top:18px;display:flex;gap:12px;justify-content:center">
-        <button id="saveBtn" class="btn btn-neon">Salva Stato</button>
+        <button id="saveBtn" class="btn btn-neon">Aggiorna Stato</button>
         <button id="logoutBtn" class="btn" style="background:#ff5c6c;color:#fff;border-radius:8px">Logout</button>
       </div>
-
       <p id="panel-msg" style="color:#bfeed5;margin-top:12px"></p>
     </section>
   </main>
@@ -89,13 +85,8 @@
   </footer>
 
   <script>
-    // --- USERS HARDcoded per test (temporaneo) ---
-    const USERS = [
-      { username: 'admin', password: '1234' },
-      { username: 'staff1', password: 'staffpass' }
-    ];
+    const USERS = [{ username: 'admin', password: '1234' }];
 
-    // elements
     const loginArea = document.getElementById('login-area');
     const panelArea = document.getElementById('panel-area');
     const loginForm = document.getElementById('loginForm');
@@ -103,7 +94,6 @@
     const loggedUserEl = document.getElementById('logged-user');
     const panelMsg = document.getElementById('panel-msg');
 
-    // keep state in localStorage (simple)
     function isLogged() {
       return !!localStorage.getItem('rfrp_logged_user');
     }
@@ -111,27 +101,18 @@
       return localStorage.getItem('rfrp_logged_user') || '';
     }
 
-    // show/hide based on login
     function refreshUI() {
       if (isLogged()) {
         loginArea.classList.add('hidden');
         panelArea.classList.remove('hidden');
         loggedUserEl.textContent = getLoggedUser();
-        // load saved status to selects
-        const s = JSON.parse(localStorage.getItem('rfrp_status') || '{}');
-        if (s.server) document.getElementById('serverSelect').value = s.server;
-        if (s.bot) document.getElementById('botSelect').value = s.bot;
-        if (s.app) document.getElementById('appSelect').value = s.app;
       } else {
         loginArea.classList.remove('hidden');
         panelArea.classList.add('hidden');
       }
     }
-
-    // initial UI
     refreshUI();
 
-    // login submit
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       loginError.textContent = '';
@@ -139,32 +120,35 @@
       const p = document.getElementById('login-password').value.trim();
       const found = USERS.find(x => x.username === u && x.password === p);
       if (!found) {
-        loginError.textContent = 'Credenziali errate. Controlla username/password.';
+        loginError.textContent = 'Credenziali errate.';
         return;
       }
-      // success
       localStorage.setItem('rfrp_logged_user', found.username);
-      loginError.textContent = '';
       refreshUI();
     });
 
-    // save state
-    document.getElementById('saveBtn').addEventListener('click', () => {
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('rfrp_logged_user');
+      refreshUI();
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', async () => {
       const status = {
         server: document.getElementById('serverSelect').value,
         bot: document.getElementById('botSelect').value,
         app: document.getElementById('appSelect').value
       };
-      localStorage.setItem('rfrp_status', JSON.stringify(status));
-      panelMsg.textContent = 'Stato salvato localmente (demo).';
-      setTimeout(()=>panelMsg.textContent = '', 3000);
-      // optional: update public page via storage (users viewing status.html will read localStorage)
-    });
 
-    // logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('rfrp_logged_user');
-      refreshUI();
+      try {
+        await fetch('status.json', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(status)
+        });
+        panelMsg.textContent = '✅ Stato aggiornato correttamente!';
+      } catch (e) {
+        panelMsg.textContent = '⚠️ Non posso scrivere su GitHub Pages (demo locale).';
+      }
     });
   </script>
 </body>
