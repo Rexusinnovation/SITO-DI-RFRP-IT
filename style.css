@@ -266,3 +266,21 @@ footer {
   box-shadow: 0 0 10px #00ff80;
 }
 
+/* 🔥 Aggiunta richiesta */
+.status-container.row {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.status-box {
+  flex: 1 1 250px;
+  max-width: 300px;
+  text-align: center;
+  border: 2px solid #00ff88;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 0 15px #00ff88;
+  background: rgba(0, 0, 0, 0.6);
+}
