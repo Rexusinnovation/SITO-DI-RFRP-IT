@@ -29,23 +29,32 @@
   </header>
 
   <main>
-    <section class="hero">
-      <h1>Stato del Server</h1>
-      <p>IP: <strong>play.rfrp.it</strong></p>
-      <p>Giocatori online: <span id="players">Caricamento...</span></p>
+    <section class="status-section">
+      <h1>Stato del Sistema</h1>
+      <div class="status-grid">
+        <div class="status-card">
+          <h2>Server di Gioco</h2>
+          <div class="status-dot online"></div>
+          <p>Online</p>
+        </div>
+
+        <div class="status-card">
+          <h2>Bot Discord</h2>
+          <div class="status-dot offline"></div>
+          <p>Offline</p>
+        </div>
+
+        <div class="status-card">
+          <h2>Applicazioni</h2>
+          <div class="status-dot maintenance"></div>
+          <p>In manutenzione</p>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer>
-    <div class="footer-inner">
-      <div>© 2025 RFRP IT®</div>
-      <div class="small">La giungla è la mia pista.</div>
-    </div>
+    <p>© 2025 RFRP IT® - Tutti i diritti riservati</p>
   </footer>
-
-  <script>
-    // Finto status (puoi sostituire con una fetch API reale)
-    document.getElementById('players').textContent = Math.floor(Math.random() * 64) + "/64";
-  </script>
 </body>
 </html>
