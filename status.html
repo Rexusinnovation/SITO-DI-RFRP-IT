@@ -28,33 +28,51 @@
     <div class="neon-line"></div>
   </header>
 
-  <main>
-    <section class="status-section">
-      <h1>Stato del Sistema</h1>
-      <div class="status-grid">
-        <div class="status-card">
-          <h2>Server di Gioco</h2>
-          <div class="status-dot online"></div>
-          <p>Online</p>
-        </div>
+  <main class="status-main">
+    <h1>Stato dei Servizi</h1>
 
-        <div class="status-card">
-          <h2>Bot Discord</h2>
-          <div class="status-dot offline"></div>
-          <p>Offline</p>
-        </div>
-
-        <div class="status-card">
-          <h2>Applicazioni</h2>
-          <div class="status-dot maintenance"></div>
-          <p>In manutenzione</p>
-        </div>
+    <div class="status-container">
+      <div class="status-item">
+        <h3>Server di Gioco</h3>
+        <p id="serverStatus" class="status">Caricamento...</p>
       </div>
-    </section>
+      <div class="status-item">
+        <h3>Bot Discord</h3>
+        <p id="botStatus" class="status">Caricamento...</p>
+      </div>
+      <div class="status-item">
+        <h3>Applicazioni</h3>
+        <p id="appStatus" class="status">Caricamento...</p>
+      </div>
+    </div>
   </main>
 
   <footer>
-    <p>© 2025 RFRP IT® - Tutti i diritti riservati</p>
+    <p style="text-align:center">© 2025 RFRP IT® - Tutti i diritti riservati</p>
   </footer>
+
+  <script>
+    async function loadStatus() {
+      try {
+        const res = await fetch('status.json?_=' + Date.now());
+        const data = await res.json();
+
+        const statuses = {
+          Online: '🟢 Online',
+          Offline: '🔴 Offline',
+          Manutenzione: '🟡 In manutenzione',
+          Aperte: '🟢 Aperte',
+          Chiuse: '🔴 Chiuse'
+        };
+
+        document.getElementById('serverStatus').textContent = statuses[data.server] || data.server;
+        document.getElementById('botStatus').textContent = statuses[data.bot] || data.bot;
+        document.getElementById('appStatus').textContent = statuses[data.app] || data.app;
+      } catch (err) {
+        document.querySelectorAll('.status').forEach(el => el.textContent = '❌ Errore nel caricamento');
+      }
+    }
+    loadStatus();
+  </script>
 </body>
 </html>
