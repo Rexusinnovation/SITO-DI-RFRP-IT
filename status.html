@@ -3,31 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RFRP - Stato Server</title>
+  <title>RFRP IT® - Stato Server</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Stato dei Servizi</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="status.html" class="active">Stato Server</a>
-      <a href="staff.html">Area Staff</a>
-    </nav>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="logo">R</div>
+        <div class="brand-text">
+          <div class="title">RFRP IT®</div>
+          <div class="subtitle">Roleplay Server • FiveM</div>
+        </div>
+      </div>
+
+      <nav class="main-nav">
+        <a href="index.html">Home</a>
+        <a href="status.html" class="active">Stato Server</a>
+        <a href="staff.html">Area Staff</a>
+      </nav>
+
+      <a class="buy-btn" href="https://rfrp-originals.tebex.io/" target="_blank">Compra</a>
+    </div>
+    <div class="neon-line"></div>
   </header>
 
   <main>
-    <div class="status-container">
-      <h2>Server di Gioco: <span id="serverStatus">Offline</span></h2>
-      <h2>Bot Discord: <span id="botStatus">Offline</span></h2>
-      <h2>Applicazioni: <span id="appStatus">Offline</span></h2>
-    </div>
+    <section class="hero">
+      <h1>Stato del Server</h1>
+      <p>IP: <strong>play.rfrp.it</strong></p>
+      <p>Giocatori online: <span id="players">Caricamento...</span></p>
+    </section>
   </main>
 
   <footer>
-    <p>© 2025 RFRP</p>
+    <div class="footer-inner">
+      <div>© 2025 RFRP IT®</div>
+      <div class="small">La giungla è la mia pista.</div>
+    </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // Finto status (puoi sostituire con una fetch API reale)
+    document.getElementById('players').textContent = Math.floor(Math.random() * 64) + "/64";
+  </script>
 </body>
 </html>
