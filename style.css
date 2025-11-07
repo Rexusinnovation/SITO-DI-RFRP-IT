@@ -218,3 +218,76 @@ footer p {
 .hidden {
   display: none !important;
 }
+
+/* === HOME CONTENT === */
+.home-content {
+  text-align: center;
+  margin-top: 80px;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.home-content h2 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 2.5rem;
+  color: #00ff99;
+  text-shadow: 0 0 20px #00ff99;
+  margin-bottom: 15px;
+}
+
+.home-content h2 span {
+  color: #00ffaa;
+  text-shadow: 0 0 25px #00ffaa;
+}
+
+.home-content p {
+  font-size: 1.1rem;
+  color: #ccc;
+  max-width: 700px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+.cta-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.btn.neon {
+  background: #00ff99;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 12px 25px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 255, 153, 0.6);
+}
+
+.btn.neon:hover {
+  background: #00cc77;
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 255, 153, 0.8);
+}
+
+/* === BUY BUTTON === */
+.buy-btn {
+  position: absolute;
+  top: 20px;
+  right: 25px;
+  background: #00ff99;
+  color: #000;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 0 20px rgba(0, 255, 153, 0.6);
+  transition: all 0.3s ease;
+}
+
+.buy-btn:hover {
+  background: #00cc77;
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(0, 255, 153, 0.9);
+}
+
