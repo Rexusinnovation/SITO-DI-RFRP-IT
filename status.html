@@ -6,24 +6,27 @@
   <title>Stato dei Servizi - RFRP IT®</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Aggiornamento per garantire layout orizzontale centrato */
+    /* Forza il layout orizzontale centrato */
     .status-container.row {
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      gap: 30px;
-      flex-wrap: wrap;
+      display: flex !important;
+      justify-content: center !important;
+      align-items: stretch !important;
+      flex-direction: row !important;
+      gap: 30px !important;
+      flex-wrap: wrap !important;
+      width: 100%;
+      margin: 0 auto;
     }
 
     .status-box {
-      flex: 1 1 250px;
-      max-width: 300px;
-      text-align: center;
-      border: 2px solid #00ff88;
-      border-radius: 15px;
-      padding: 25px;
-      box-shadow: 0 0 15px #00ff88;
-      background: rgba(0, 0, 0, 0.6);
+      flex: 1 1 250px !important;
+      max-width: 300px !important;
+      text-align: center !important;
+      border: 2px solid #00ff88 !important;
+      border-radius: 15px !important;
+      padding: 25px !important;
+      box-shadow: 0 0 15px #00ff88 !important;
+      background: rgba(0, 0, 0, 0.6) !important;
     }
   </style>
 </head>
@@ -51,7 +54,6 @@
   <main>
     <h1 class="center-title">Stato dei Servizi</h1>
 
-    <!-- Aggiunto 'row' per allineare i box orizzontalmente -->
     <div class="status-container row">
       <div class="status-box">
         <h2>Server di Gioco</h2>
