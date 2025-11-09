@@ -5,6 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RFRP IT® - Area Staff</title>
   <link rel="stylesheet" href="style.css" />
+  <style>
+    /* fix visibilità */
+    .hidden {
+      display: none !important;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -117,7 +123,8 @@
       }
     }
 
-    refreshUI();
+    // Forza refresh immediato dopo caricamento
+    document.addEventListener('DOMContentLoaded', refreshUI);
 
     // --- LOGIN ---
     loginForm.addEventListener('submit', (e) => {
@@ -138,9 +145,7 @@
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('rfrp_logged_user');
       panelMsg.textContent = '';
-      setTimeout(() => {
-        refreshUI();
-      }, 200);
+      refreshUI();
     });
 
     // --- AGGIORNA STATO ---
