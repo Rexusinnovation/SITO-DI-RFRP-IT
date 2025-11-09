@@ -6,9 +6,53 @@
   <title>RFRP IT® - Area Staff</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    /* fix visibilità */
-    .hidden {
-      display: none !important;
+    /* Centratura del pannello */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      justify-content: center;
+      align-items: center;
+      background: #090909;
+      color: white;
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: #0e0e0e;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding-top: 120px; /* per non coprire l’header */
+    }
+
+    .panel {
+      background: #121212;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 0 12px rgba(0, 255, 150, 0.3);
+      max-width: 800px;
+      width: 90%;
+      text-align: center;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 14px;
+      color: #aaa;
     }
   </style>
 </head>
@@ -48,7 +92,7 @@
     </section>
 
     <!-- PANNELLO -->
-    <section id="panel-area" class="panel hidden" style="margin-top:32px; text-align:center; padding:20px; max-width:800px;">
+    <section id="panel-area" class="panel hidden">
       <h2>Pannello di Controllo</h2>
       <p class="small">Sei loggato come <strong id="logged-user"></strong></p>
 
@@ -87,14 +131,12 @@
   </main>
 
   <footer>
-    <p style="text-align:center">© 2025 RFRP IT® - Tutti i diritti riservati</p>
+    <p>© 2025 RFRP IT® - Tutti i diritti riservati</p>
   </footer>
 
   <script>
-    // --- Credenziali demo ---
     const USERS = [{ username: 'admin', password: '1234' }];
 
-    // --- Elementi principali ---
     const loginArea = document.getElementById('login-area');
     const panelArea = document.getElementById('panel-area');
     const loginForm = document.getElementById('loginForm');
@@ -103,15 +145,12 @@
     const panelMsg = document.getElementById('panel-msg');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // --- Gestione stato login ---
     function isLogged() {
       return !!localStorage.getItem('rfrp_logged_user');
     }
-
     function getLoggedUser() {
       return localStorage.getItem('rfrp_logged_user') || '';
     }
-
     function refreshUI() {
       if (isLogged()) {
         loginArea.classList.add('hidden');
@@ -122,11 +161,8 @@
         panelArea.classList.add('hidden');
       }
     }
+    refreshUI();
 
-    // Forza refresh immediato dopo caricamento
-    document.addEventListener('DOMContentLoaded', refreshUI);
-
-    // --- LOGIN ---
     loginForm.addEventListener('submit', (e) => {
       e.preventDefault();
       loginError.textContent = '';
@@ -141,14 +177,13 @@
       refreshUI();
     });
 
-    // --- LOGOUT funzionante ---
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('rfrp_logged_user');
       panelMsg.textContent = '';
-      refreshUI();
+      setTimeout(refreshUI, 200);
     });
 
-    // --- AGGIORNA STATO ---
+    // AGGIORNA STATO - con GitHub API
     document.getElementById('saveBtn').addEventListener('click', async () => {
       const status = {
         server: document.getElementById('serverSelect').value,
@@ -157,11 +192,37 @@
       };
 
       try {
-        // GitHub Pages non supporta scrittura diretta, simuliamo il salvataggio
-        console.log("Aggiornamento simulato:", status);
-        panelMsg.textContent = '✅ Stato aggiornato correttamente! (demo GitHub)';
+        const token = "INSERISCI_IL_TUO_GITHUB_TOKEN_PERSONALE";
+        const repoOwner = "rexusinnovation";
+        const repoName = "RFRP";
+        const filePath = "status.json";
+        const branch = "main";
+
+        const getResp = await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}?ref=${branch}`, {
+          headers: { Authorization: `token ${token}` }
+        });
+        const fileData = await getResp.json();
+
+        const newContent = btoa(JSON.stringify(status, null, 2));
+
+        await fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+          method: "PUT",
+          headers: {
+            Authorization: `token ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: "Aggiornamento stato server da Area Staff",
+            content: newContent,
+            sha: fileData.sha,
+            branch
+          })
+        });
+
+        panelMsg.textContent = "✅ Stato aggiornato correttamente su GitHub!";
       } catch (e) {
-        panelMsg.textContent = '⚠️ Non posso scrivere su GitHub Pages.';
+        console.error(e);
+        panelMsg.textContent = "⚠️ Errore durante l’aggiornamento: " + e.message;
       }
     });
   </script>
