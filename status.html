@@ -6,7 +6,6 @@
   <title>Stato dei Servizi - RFRP IT®</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Forza il layout orizzontale centrato */
     .status-container.row {
       display: flex !important;
       justify-content: center !important;
@@ -85,24 +84,24 @@
     © 2025 RFRP IT® - Tutti i diritti riservati
   </footer>
 
-  <script>
-    async function aggiornaStato() {
-      try {
-        const response = await fetch('status.json?_=' + new Date().getTime());
-        const data = await response.json();
+  <!-- ✅ SCRIPT FIREBASE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-database.js";
 
-        document.getElementById('serverText').textContent = data.server;
-        aggiornaLed('serverStatus', data.server);
+    const firebaseConfig = {
+      apiKey: "AIzaSyDMLYtUSS-2XYoKIRzvS39ls4ln4c56oY4",
+      authDomain: "aggiorna-pagina-stato-server.firebaseapp.com",
+      projectId: "aggiorna-pagina-stato-server",
+      storageBucket: "aggiorna-pagina-stato-server.firebasestorage.app",
+      messagingSenderId: "138766621965",
+      appId: "1:138766621965:web:fc2631db734d7853696444",
+      measurementId: "G-57HLJGTRJL",
+      databaseURL: "https://aggiorna-pagina-stato-server-default-rtdb.europe-west1.firebasedatabase.app"
+    };
 
-        document.getElementById('botText').textContent = data.bot;
-        aggiornaLed('botStatus', data.bot);
-
-        document.getElementById('appText').textContent = data.app;
-        aggiornaLed('appStatus', data.app);
-      } catch (error) {
-        console.error("Errore nel caricamento dello stato:", error);
-      }
-    }
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     function aggiornaLed(id, stato) {
       const led = document.getElementById(id);
@@ -125,8 +124,20 @@
       }
     }
 
-    aggiornaStato();
-    setInterval(aggiornaStato, 5000);
+    const statusRef = ref(db, 'stato'); // percorso in cui salveremo i dati
+    onValue(statusRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        document.getElementById('serverText').textContent = data.server;
+        aggiornaLed('serverStatus', data.server);
+
+        document.getElementById('botText').textContent = data.bot;
+        aggiornaLed('botStatus', data.bot);
+
+        document.getElementById('appText').textContent = data.app;
+        aggiornaLed('appStatus', data.app);
+      }
+    });
   </script>
 </body>
 </html>
