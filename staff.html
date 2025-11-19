@@ -163,82 +163,81 @@
   </footer>
 
   <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDMLYtUSS-2XYoKIRzvS39ls4ln4c56oY4",
-      authDomain: "aggiorna-pagina-stato-server.firebaseapp.com",
-      projectId: "aggiorna-pagina-stato-server",
-      storageBucket: "aggiorna-pagina-stato-server.firebasestorage.app",
-      messagingSenderId: "138766621965",
-      appId: "1:138766621965:web:fc2631db734d7853696444",
-      measurementId: "G-57HLJGTRJL"
+  const firebaseConfig = {
+    apiKey: "AIzaSyDMLYtUSS-2XYoKIRzvS39ls4ln4c56oY4",
+    authDomain: "aggiorna-pagina-stato-server.firebaseapp.com",
+    projectId: "aggiorna-pagina-stato-server",
+    storageBucket: "aggiorna-pagina-stato-server.firebasestorage.app",
+    messagingSenderId: "138766621965",
+    appId: "1:138766621965:web:fc2631db734d7853696444",
+    measurementId: "G-57HLJGTRJL",
+    databaseURL: "https://aggiorna-pagina-stato-server-default-rtdb.europe-west1.firebasedatabase.app"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  const USERS = [{ username: 'admin', password: '1234' }];
+  const loginArea = document.getElementById('login-area');
+  const panelArea = document.getElementById('panel-area');
+  const loginForm = document.getElementById('loginForm');
+  const loginError = document.getElementById('login-error');
+  const loggedUserEl = document.getElementById('logged-user');
+  const panelMsg = document.getElementById('panel-msg');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  function isLogged() { return !!localStorage.getItem('rfrp_logged_user'); }
+  function getLoggedUser() { return localStorage.getItem('rfrp_logged_user') || ''; }
+
+  function refreshUI() {
+    if (isLogged()) {
+      loginArea.classList.add('hidden');
+      panelArea.classList.remove('hidden');
+      loggedUserEl.textContent = getLoggedUser();
+    } else {
+      panelArea.classList.add('hidden');
+      loginArea.classList.remove('hidden');
+    }
+  }
+  refreshUI();
+
+  loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    loginError.textContent = '';
+    const u = document.getElementById('login-username').value.trim();
+    const p = document.getElementById('login-password').value.trim();
+    const found = USERS.find(x => x.username === u && x.password === p);
+    if (!found) {
+      loginError.textContent = 'Credenziali errate.';
+      return;
+    }
+    localStorage.setItem('rfrp_logged_user', found.username);
+    refreshUI();
+  });
+
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem('rfrp_logged_user');
+    panelMsg.textContent = '';
+    setTimeout(refreshUI, 200);
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', async () => {
+    const status = {
+      server: document.getElementById('serverSelect').value,
+      bot: document.getElementById('botSelect').value,
+      app: document.getElementById('appSelect').value,
+      updatedAt: new Date().toISOString()
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const USERS = [{ username: 'admin', password: '1234' }];
-    const loginArea = document.getElementById('login-area');
-    const panelArea = document.getElementById('panel-area');
-    const loginForm = document.getElementById('loginForm');
-    const loginError = document.getElementById('login-error');
-    const loggedUserEl = document.getElementById('logged-user');
-    const panelMsg = document.getElementById('panel-msg');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    function isLogged() { return !!localStorage.getItem('rfrp_logged_user'); }
-    function getLoggedUser() { return localStorage.getItem('rfrp_logged_user') || ''; }
-
-    function refreshUI() {
-      if (isLogged()) {
-        loginArea.classList.add('hidden');
-        panelArea.classList.remove('hidden');
-        loggedUserEl.textContent = getLoggedUser();
-      } else {
-        panelArea.classList.add('hidden');
-        loginArea.classList.remove('hidden');
-      }
+    try {
+      await set(ref(db, "stato"), status);
+      panelMsg.textContent = "✅ Stato aggiornato correttamente!";
+    } catch (e) {
+      panelMsg.textContent = "⚠️ Errore durante l’aggiornamento: " + e.message;
     }
-    refreshUI();
-
-    loginForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      loginError.textContent = '';
-      const u = document.getElementById('login-username').value.trim();
-      const p = document.getElementById('login-password').value.trim();
-      const found = USERS.find(x => x.username === u && x.password === p);
-      if (!found) {
-        loginError.textContent = 'Credenziali errate.';
-        return;
-      }
-      localStorage.setItem('rfrp_logged_user', found.username);
-      refreshUI();
-    });
-
-    logoutBtn.addEventListener('click', () => {
-      localStorage.removeItem('rfrp_logged_user');
-      panelMsg.textContent = '';
-      setTimeout(refreshUI, 200);
-    });
-
-    document.getElementById('saveBtn').addEventListener('click', async () => {
-      const status = {
-        server: document.getElementById('serverSelect').value,
-        bot: document.getElementById('botSelect').value,
-        app: document.getElementById('appSelect').value,
-        updatedAt: new Date().toISOString()
-      };
-
-      try {
-        await setDoc(doc(db, "status", "rfrp"), status);
-        panelMsg.textContent = "✅ Stato aggiornato correttamente!";
-      } catch (e) {
-        panelMsg.textContent = "⚠️ Errore durante l’aggiornamento: " + e.message;
-      }
-    });
-  </script>
-</body>
-</html>
+  });
+</script>
