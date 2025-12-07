@@ -162,19 +162,36 @@
     <p>© 2025 RFRP IT® - Tutti i diritti riservati</p>
   </footer>
 
-  <!-- Firebase SDK -->
+  <!-- FIREBASE SCRIPT -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-  const firebaseConfig = { ... };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDMLYtUSS-2XYoKIRzvS39ls4ln4c56oY4",
+    authDomain: "aggiorna-pagina-stato-server.firebaseapp.com",
+    projectId: "aggiorna-pagina-stato-server",
+    storageBucket: "aggiorna-pagina-stato-server.firebasestorage.app",
+    messagingSenderId: "138766621965",
+    appId: "1:138766621965:web:fc2631db734d7853696444",
+    measurementId: "G-57HLJGTRJL",
+    databaseURL: "https://aggiorna-pagina-stato-server-default-rtdb.europe-west1.firebasedatabase.app"
+  };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
   const auth = getAuth(app);
 
-  // UI handling
+  /** ⭐⭐ AGGIUNTO QUI — NECESSARIO ⭐⭐ **/
+  const loginArea = document.getElementById("login-area");
+  const panelArea = document.getElementById("panel-area");
+  const loginForm = document.getElementById("loginForm");
+  const loginError = document.getElementById("login-error");
+  const loggedUserEl = document.getElementById("logged-user");
+  const panelMsg = document.getElementById("panel-msg");
+  const logoutBtn = document.getElementById("logoutBtn");
+
   function refreshUI(user) {
     if (user) {
       loginArea.classList.add('hidden');
@@ -190,7 +207,6 @@
     refreshUI(user);
   });
 
-  // LOGIN FIREBASE
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     loginError.textContent = '';
@@ -207,13 +223,11 @@
     }
   });
 
-  // LOGOUT
   logoutBtn.addEventListener('click', async () => {
     await signOut(auth);
     panelMsg.textContent = "";
   });
 
-  // UPDATE DATABASE
   document.getElementById('saveBtn').addEventListener('click', async () => {
     if (!auth.currentUser) {
       panelMsg.textContent = "⚠️ Non sei autenticato!";
@@ -235,3 +249,5 @@
     }
   });
 </script>
+</body>
+</html>
