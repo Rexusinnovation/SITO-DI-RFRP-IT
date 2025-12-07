@@ -50,8 +50,8 @@ form.addEventListener("submit", async (e) => {
 
   msg.textContent = "";
 
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
+  const username = document.getElementById("login-username").value.trim();
+const password = document.getElementById("login-password").value.trim();
 
   // ❤️ Username → Email finta
   const email = `${username}@rfrp.local`;
