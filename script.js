@@ -20,22 +20,25 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-// -------------------- UI ELEMENTS --------------------
-const form = document.getElementById("loginForm");
-const panel = document.getElementById("panel");
-const msg = document.getElementById("login-msg");
+// -------------------- UI ELEMENTS (CORRETTI) --------------------
+const loginArea = document.getElementById("login-area");
+const panelArea = document.getElementById("panel-area");
+const loginForm = document.getElementById("loginForm");
+const loginError = document.getElementById("login-error");
+const loggedUserEl = document.getElementById("logged-user");
+const panelMsg = document.getElementById("panel-msg");
 const logoutBtn = document.getElementById("logoutBtn");
 const saveBtn = document.getElementById("saveBtn");
 
 // -------------------- UPDATE UI --------------------
 function refreshUI(user) {
   if (user) {
-    form.classList.add("hidden");
-    panel.classList.remove("hidden");
-    msg.textContent = "";
+    loginArea.classList.add("hidden");
+    panelArea.classList.remove("hidden");
+    loggedUserEl.textContent = "admin";
   } else {
-    panel.classList.add("hidden");
-    form.classList.remove("hidden");
+    panelArea.classList.add("hidden");
+    loginArea.classList.remove("hidden");
   }
 }
 
@@ -45,13 +48,13 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // -------------------- LOGIN --------------------
-form.addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  msg.textContent = "";
+  loginError.textContent = "";
 
   const username = document.getElementById("login-username").value.trim();
-const password = document.getElementById("login-password").value.trim();
+  const password = document.getElementById("login-password").value.trim();
 
   // ❤️ Username → Email finta
   const email = `${username}@rfrp.local`;
@@ -59,7 +62,7 @@ const password = document.getElementById("login-password").value.trim();
   try {
     await signInWithEmailAndPassword(auth, email, password);
   } catch (err) {
-    msg.textContent = "❌ Credenziali errate!";
+    loginError.textContent = "❌ Credenziali errate!";
   }
 });
 
@@ -71,7 +74,7 @@ logoutBtn.addEventListener("click", async () => {
 // -------------------- SAVE STATUS (FIREBASE DB) --------------------
 saveBtn.addEventListener("click", async () => {
   if (!auth.currentUser) {
-    alert("⚠️ Non sei autenticato!");
+    panelMsg.textContent = "⚠️ Non sei autenticato!";
     return;
   }
 
@@ -84,8 +87,8 @@ saveBtn.addEventListener("click", async () => {
 
   try {
     await set(ref(db, "stato"), status);
-    alert("✅ Stato aggiornato correttamente!");
+    panelMsg.textContent = "✅ Stato aggiornato correttamente!";
   } catch (e) {
-    alert("❌ Errore: " + e.message);
+    panelMsg.textContent = "❌ Errore: " + e.message;
   }
 });
