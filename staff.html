@@ -183,7 +183,7 @@
   const db = getDatabase(app);
   const auth = getAuth(app);
 
-  /** ⭐⭐ AGGIUNTO QUI — NECESSARIO ⭐⭐ **/
+  /** ⭐⭐ ELEMENTI UI — NECESSARI ⭐⭐ **/
   const loginArea = document.getElementById("login-area");
   const panelArea = document.getElementById("panel-area");
   const loginForm = document.getElementById("loginForm");
@@ -191,6 +191,7 @@
   const loggedUserEl = document.getElementById("logged-user");
   const panelMsg = document.getElementById("panel-msg");
   const logoutBtn = document.getElementById("logoutBtn");
+  const saveBtn = document.getElementById("saveBtn");   // <-- AGGIUNTO
 
   function refreshUI(user) {
     if (user) {
@@ -218,7 +219,7 @@
     try {
       await signInWithEmailAndPassword(auth, email, p);
     } catch (err) {
-      loginError.textContent = 'Credenziali errate.';
+      loginError.textContent = '❌ Credenziali errate!';
       return;
     }
   });
@@ -249,5 +250,3 @@
     }
   });
 </script>
-</body>
-</html>
