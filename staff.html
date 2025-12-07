@@ -163,69 +163,63 @@
   </footer>
 
   <!-- Firebase SDK -->
- <script type="module">
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
   import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDMLYtUSS-2XYoKIRzvS39ls4ln4c56oY4",
-    authDomain: "aggiorna-pagina-stato-server.firebaseapp.com",
-    projectId: "aggiorna-pagina-stato-server",
-    storageBucket: "aggiorna-pagina-stato-server.firebasestorage.app",
-    messagingSenderId: "138766621965",
-    appId: "1:138766621965:web:fc2631db734d7853696444",
-    measurementId: "G-57HLJGTRJL",
-    databaseURL: "https://aggiorna-pagina-stato-server-default-rtdb.europe-west1.firebasedatabase.app"
-  };
+  const firebaseConfig = { ... };
 
   const app = initializeApp(firebaseConfig);
   const db = getDatabase(app);
+  const auth = getAuth(app);
 
-  const USERS = [{ username: 'admin', password: '123456' }];
-  const loginArea = document.getElementById('login-area');
-  const panelArea = document.getElementById('panel-area');
-  const loginForm = document.getElementById('loginForm');
-  const loginError = document.getElementById('login-error');
-  const loggedUserEl = document.getElementById('logged-user');
-  const panelMsg = document.getElementById('panel-msg');
-  const logoutBtn = document.getElementById('logoutBtn');
-
-  function isLogged() { return !!localStorage.getItem('rfrp_logged_user'); }
-  function getLoggedUser() { return localStorage.getItem('rfrp_logged_user') || ''; }
-
-  function refreshUI() {
-    if (isLogged()) {
+  // UI handling
+  function refreshUI(user) {
+    if (user) {
       loginArea.classList.add('hidden');
       panelArea.classList.remove('hidden');
-      loggedUserEl.textContent = getLoggedUser();
+      loggedUserEl.textContent = "admin";
     } else {
       panelArea.classList.add('hidden');
       loginArea.classList.remove('hidden');
     }
   }
-  refreshUI();
 
-  loginForm.addEventListener('submit', (e) => {
+  onAuthStateChanged(auth, (user) => {
+    refreshUI(user);
+  });
+
+  // LOGIN FIREBASE
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     loginError.textContent = '';
+
     const u = document.getElementById('login-username').value.trim();
     const p = document.getElementById('login-password').value.trim();
-    const found = USERS.find(x => x.username === u && x.password === p);
-    if (!found) {
+    const email = `${u}@rfrp.local`;
+
+    try {
+      await signInWithEmailAndPassword(auth, email, p);
+    } catch (err) {
       loginError.textContent = 'Credenziali errate.';
       return;
     }
-    localStorage.setItem('rfrp_logged_user', found.username);
-    refreshUI();
   });
 
-  logoutBtn.addEventListener('click', () => {
-    localStorage.removeItem('rfrp_logged_user');
-    panelMsg.textContent = '';
-    setTimeout(refreshUI, 200);
+  // LOGOUT
+  logoutBtn.addEventListener('click', async () => {
+    await signOut(auth);
+    panelMsg.textContent = "";
   });
 
+  // UPDATE DATABASE
   document.getElementById('saveBtn').addEventListener('click', async () => {
+    if (!auth.currentUser) {
+      panelMsg.textContent = "⚠️ Non sei autenticato!";
+      return;
+    }
+
     const status = {
       server: document.getElementById('serverSelect').value,
       bot: document.getElementById('botSelect').value,
